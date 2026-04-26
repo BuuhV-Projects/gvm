@@ -31,7 +31,7 @@ export GVM_DIR="$HOME/.gvm"
 ```bash
 gvm install go1.26.2
 gvm use go1.26.2
-gvm alias default go1.26.2
+gvm use go1.26.2 --default
 gvm current
 gvm list
 gvm ls-remote
@@ -43,6 +43,13 @@ Versions can be passed with or without the `go` prefix:
 ```bash
 gvm install 1.26.2
 gvm use go1.26.2
+```
+
+`gvm use` only changes the current shell. To make a version available when a
+new terminal starts, set a default:
+
+```bash
+gvm use go1.26.2 --default
 ```
 
 ## Windows
@@ -70,6 +77,7 @@ Use Git Bash, MSYS2, or Cygwin. On Windows, GVM downloads official
 ```text
 gvm install <version>       Download and install a Go binary release
 gvm use <version|default>   Use an installed Go version in this shell
+gvm use <version> --default Use now and make it the default for new shells
 gvm list                    List installed Go versions
 gvm ls-remote               List remote Go versions
 gvm current                 Show the active Go version

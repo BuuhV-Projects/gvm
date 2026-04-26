@@ -163,9 +163,23 @@ gvm_install() {
 }
 
 gvm_use() {
-  local version dir go_bin
+  local version dir go_bin make_default
 
   version="$(gvm_resolve_version "$1")" || return 1
+  shift || true
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --default)
+        make_default=1
+        ;;
+      *)
+        gvm_error "Unknown option for use: $1"
+        return 1
+        ;;
+    esac
+    shift
+  done
+
   dir="$(gvm_version_dir "$version")"
 
   if [ ! -d "$dir" ]; then
@@ -190,6 +204,11 @@ gvm_use() {
 
   gvm_info "Now using $version"
   "$go_bin" version
+  if [ "$make_default" = "1" ]; then
+    gvm_alias default "$version"
+  else
+    gvm_info "Run 'gvm use $version --default' to make this version available in new shells."
+  fi
 }
 
 gvm_current() {
@@ -298,6 +317,7 @@ Usage: gvm <command> [args]
 Commands:
   install <version>       Download and install a Go binary release
   use <version|default>   Use an installed Go version in this shell
+  use <version> --default Use now and make it the default for new shells
   list, ls                List installed Go versions
   ls-remote               List remote Go versions
   current                 Show the active Go version
@@ -310,6 +330,7 @@ Commands:
 Examples:
   gvm install go1.22.5
   gvm use go1.22.5
+  gvm use go1.22.5 --default
   gvm alias default go1.22.5
 EOF
 }
